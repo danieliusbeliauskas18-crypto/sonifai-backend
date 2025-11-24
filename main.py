@@ -1,11 +1,21 @@
 from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
 import os
 import uuid
 from basic_pitch.inference import predict
 from basic_pitch import ICASSP_2022_MODEL_PATH
 
 app = FastAPI()
+
+# Allow frontend (and for now, everything) to call this API
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # later you can restrict to your Vercel domain
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Base directory of this file
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -17,6 +27,7 @@ OUTPUT_DIR = os.path.join(BASE_DIR, "outputs")
 # Make sure folders exist
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 os.makedirs(OUTPUT_DIR, exist_ok=True)
+
 
 @app.post("/transcribe")
 async def transcribe(audio: UploadFile = File(...)):
