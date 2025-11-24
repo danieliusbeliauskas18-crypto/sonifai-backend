@@ -4,4 +4,4 @@ python-multipart
 basic-pitch
 onnxruntime
 numpy<2
-
+setuptools
